@@ -1,0 +1,29 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+  mail:
+    host: sandbox.smtp.mailtrap.io
+    username: ${MAILTRAP_USERNAME}
+    properties:
+      mail:
+        debug: true
+
+jwt:
+  expiration-minutes: 1000
+
+nginx:
+  require-proxy: false
+
+chirp:
+  email:
+    url: "http://localhost:8080"
+  rate-limit:
+    ip:
+      apply-limit: false
+  web-socket:
+    allowed-origin: "http://localhost:8080"
+
+logging:
+  level:
+    com.seno.chirp: DEBUG

@@ -1,0 +1,22 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  mail:
+    host: sandbox.smtp.mailtrap.io
+    username: ${MAILTRAP_USERNAME}
+
+jwt:
+  expiration-minutes: 15
+
+nginx:
+  require-proxy: true
+
+chirp:
+  email:
+    url: "http://localhost:8080" # TODO: prod base url
+  rate-limit:
+    ip:
+      apply-limit: true
+  web-socket:
+    allowed-origin: "http://localhost:8080" # TODO: prod base url
