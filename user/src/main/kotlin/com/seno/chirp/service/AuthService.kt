@@ -69,11 +69,12 @@ class AuthService(
             throw InvalidCredentialsException()
         }
 
-        if (!user.hasVerifiedEmail) {
-            throw EmailNotVerifiedException()
-        }
-
         return user.id?.let { userId ->
+            if (!user.hasVerifiedEmail) {
+                emailVerificationService.sendVerificationIfNeeded(userId, user.email)
+                throw EmailNotVerifiedException()
+            }
+
             val accessToken = jwtService.generateAccessToken(userId)
             val refreshToken = jwtService.generateRefreshToken(userId)
 
