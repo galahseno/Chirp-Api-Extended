@@ -4,6 +4,7 @@ import com.seno.chirp.domain.events.user.UserEvent
 import com.seno.chirp.domain.exception.InvalidTokenException
 import com.seno.chirp.domain.exception.UserNotFoundException
 import com.seno.chirp.domain.model.EmailVerificationToken
+import com.seno.chirp.domain.type.UserId
 import com.seno.chirp.infra.database.entities.EmailVerificationTokenEntity
 import com.seno.chirp.infra.database.mappers.toEmailVerificationToken
 import com.seno.chirp.infra.database.repository.EmailVerificationTokenRepository
@@ -56,6 +57,26 @@ class EmailVerificationService(
 
         return emailVerificationTokenRepository.save(token).toEmailVerificationToken()
     }
+
+    @Transactional
+    fun sendVerificationIfNeeded(userId: UserId, email: String) {
+        val activeToken = emailVerificationTokenRepository
+            .findActiveTokenByUserId(userId)
+
+        if (activeToken == null) {
+            val token = createVerificationToken(email)
+
+            eventPublisher.publish(
+                UserEvent.RequestResendVerification(
+                    userId = token.user.id,
+                    email = token.user.email,
+                    username = token.user.username,
+                    verificationToken = token.token
+                )
+            )
+        }
+    }
+
 
     @Transactional
     fun verifyEmail(token: String) {
